@@ -4,6 +4,7 @@
 #include <fstream>
 
 #include "tree.h"
+#include "bitvector.h"
 
 // default frequency size is 256 for ascii
 #define FREQ_SIZE 256
@@ -41,10 +42,10 @@ std::priority_queue<Node>* load_queue(int* freqs){
 		if (!freqs[i])	continue;
 
 		// create a node
-		Node* n = new Node((char)i, freqs[i]);
+		Node n((char)i, freqs[i]);
 
 		// add to priority queue
-		pq->push(*n);
+		pq->push(n);
 	}
 
 	return pq;
@@ -55,10 +56,32 @@ std::priority_queue<Node>* load_queue(int* freqs){
 Node* construct_tree(std::priority_queue<Node>* pq){
 
 	while(pq->size() > 1){
+		Node* n1 = new Node(pq->top());
+		pq->pop();
+		Node* n2 = new Node(pq->top());
+		pq->pop();
 
+		// std::cout << *n1 << " " << *n2 << std::endl;
+
+		Node* parent = new Node('\0', n1->freq + n2->freq, n1, n2);
+
+		pq->push(*parent);
 	}
 
-	return NULL;
+	Node* root = new Node(pq->top());
+	pq->pop();
+	return root;
+}
+
+void generate_header(const Node* node, std::string curr){
+	if(!node)	return;
+	// check if leaf
+	if(!node->left && !node->right){
+		std::cout << *node << " " << curr << std::endl;
+	} else {
+		generate_header(node->left, curr + "0");
+		generate_header(node->right, curr + "1");
+	}	
 }
 
 void encode(std::string filename){
@@ -67,16 +90,19 @@ void encode(std::string filename){
 
 	std::priority_queue<Node>* pq = load_queue(freqs);
 
-	while(!pq->empty()){
-		std::cout << pq->top() << std::endl;
-		pq->pop();
-	}
+	const Node* root = construct_tree(pq);
 
-	free(freqs);
+	// generate_codes(root, "");
+	std::cout << (root->left->value) << std::endl;
+
 
 }
 
 int main(int argc, char* argv[]){
-	encode("input.txt");
+	// std::cout << sizeof(bool) << std::endl;
+	bitvector bv;
+	bv.append(true);
+
+	// encode("input.txt");
 	return 0;
 }

@@ -9,11 +9,7 @@ struct Node {
 	Node() : value(0), freq(0), left(NULL), right(NULL) {}
 	Node(char v, int f) : value(v), freq(f), left(NULL), right(NULL) {}
 	Node(char v, int f, Node* l, Node* r) : value(v), freq(f), left(l), right(r) {}
-
-	~Node(){
-		if(left)	delete left;
-		if(right)	delete right;
-	}
+	Node(const Node& n) : value(n.value), freq(n.freq), left(n.left), right(n.right) {}
 };
 
 // bool operator> (const &Node n1, const &Node n2){
@@ -39,4 +35,16 @@ bool operator< (const Node& n1, const Node& n2) {
 std::ostream& operator<<(std::ostream& os, const Node& n){
 	os << n.value << " " << n.freq;
 	return os;
+}
+
+void print_leafs(const Node* root){
+	if(!root)	return;
+
+	if(!root->left && !root->right){
+		std::cout << *root << std::endl;
+	}
+	else{
+		print_leafs(root->left);
+		print_leafs(root->right);
+	}	
 }
