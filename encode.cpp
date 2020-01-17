@@ -102,11 +102,11 @@ void encode(std::string filename){
 int main(int argc, char* argv[]){
 	// std::cout << sizeof(bool) << std::endl;
 	bitvector bv;
-	bv.append(true);
-	// bv.append('1');
-	bv.append((char)255,8);
-
+	for(int i = 0; i < 256; i++){
+		bv.append((char)i, 8);
+	}
 	std::cout << bv << std::endl;
+
 
 	// encode("input.txt");
 	return 0;

@@ -4,13 +4,14 @@
 class bitvector{
 	public:
 		bitvector() : size(0), capacity(256) {
-			bit_array = (int*)calloc(capacity/8, 1);	
+			bit_array = (uint8_t*)calloc(capacity/8, 1);	
 		};
 
 		void append(bool b){
-			if( size < capacity / 2){
-				capacity = capacity*8;
-				bit_array = (int*)realloc(bit_array, capacity/8);
+			if( size > capacity / 2){
+				capacity = capacity*2;
+				std::cout << capacity << std::endl;
+				bit_array = (uint8_t*)realloc(bit_array, capacity);
 			}
 			
 			// find integer index
@@ -18,16 +19,14 @@ class bitvector{
 			size_t offset = size % 8;
 
 			if(b){
-				bit_array[index] = bit_array[index] | 1 << (7 - offset);
+				bit_array[index] = bit_array[index] | (1 << (7 - offset));
 			} else {
-				bit_array[index] = bit_array[index] & 0 << (7 - offset);
+				bit_array[index] = bit_array[index] & ~(1 << (7 - offset));
 			}
 
 			size++;
 		}
 
-		// should only be used if all data is to be read this way
-		// amount is number of bits to take from c
 		void append(char c, int amount){
 			if(amount > 8)	amount = 8;
 			uint8_t i = (uint8_t) c;
@@ -44,7 +43,7 @@ class bitvector{
 	private:
 		size_t size;
 		size_t capacity;
-		int* bit_array;
+		uint8_t* bit_array;
 
    friend std::ostream& operator<<(std::ostream&, bitvector&);
 };
