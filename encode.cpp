@@ -2,6 +2,7 @@
 #include <queue>
 #include <string>
 #include <fstream>
+#include <cstdint>
 
 #include "tree.h"
 #include "bitvector.h"
@@ -102,6 +103,10 @@ int main(int argc, char* argv[]){
 	// std::cout << sizeof(bool) << std::endl;
 	bitvector bv;
 	bv.append(true);
+	// bv.append('1');
+	bv.append((char)255,8);
+
+	std::cout << bv << std::endl;
 
 	// encode("input.txt");
 	return 0;

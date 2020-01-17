@@ -18,7 +18,7 @@ class bitvector{
 			size_t offset = size % 8;
 
 			if(b){
-				bit_array[index] = bit_array[index] & 1 << (7 - offset);
+				bit_array[index] = bit_array[index] | 1 << (7 - offset);
 			} else {
 				bit_array[index] = bit_array[index] & 0 << (7 - offset);
 			}
@@ -27,10 +27,14 @@ class bitvector{
 		}
 
 		// should only be used if all data is to be read this way
-		void append(char i){
-			uint8_t test;
-			std::cout << test << std::endl;
-			for(int j = 0; j < 8; j++){
+		// amount is number of bits to take from c
+		void append(char c, int amount){
+			if(amount > 8)	amount = 8;
+			uint8_t i = (uint8_t) c;
+			bool b;
+			for(int j = 0; j < amount; j++){
+				b = (i >> (7 - j)) % 2;	
+				append(b);
 			}
 		}
 
