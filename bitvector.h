@@ -7,10 +7,43 @@ class bitvector{
 			bit_array = (uint8_t*)calloc(capacity/8, 1);	
 		};
 
+		bitvector(std::string s) : bitvector() {
+			for(char c : s){
+				if(c == '0'){
+					append(false);
+				} else{
+					append(true);
+				}
+			}
+
+		}
+
+		~bitvector() {
+			free(bit_array);
+		}
+
+		std::string to_string(){
+			std::string s;
+			for(size_t i = 0; i < size; i++){
+				if(get(i)){
+					s += '1';
+				} else {
+					s += '0';
+				}
+			}
+			return s;
+		}
+
+		void append(bitvector& bv){
+			for(size_t i = 0; i < bv.size; i++){
+				append(bv.get(i));
+			}	
+		}
+
 		void append(bool b){
 			if( size > capacity / 2){
 				capacity = capacity*2;
-				std::cout << capacity << std::endl;
+				// std::cout << capacity << std::endl;
 				bit_array = (uint8_t*)realloc(bit_array, capacity);
 			}
 			
@@ -37,21 +70,23 @@ class bitvector{
 			}
 		}
 
-		int get(size_t index){
+		bool get(size_t index){
 			return (bit_array[index / 8] >> (7 - (index % 8))) % 2;
 		}
 	private:
 		size_t size;
 		size_t capacity;
-		uint8_t* bit_array;
-
-   friend std::ostream& operator<<(std::ostream&, bitvector&);
-};
-
+		uint8_t* bit_array; friend std::ostream& operator<<(std::ostream&, bitvector&); 
+}; 
 std::ostream& operator<<(std::ostream& os, bitvector& bv){
-	for(size_t i = 0; i < bv.size; i++){
-		os << bv.get(i);
-	}
+	// print number of bits
+	os << "Size: " << bv.size << std::endl;
+	// then print data
+	// for(size_t i = 0; i < bv.size; i+=8){
+		// os << bv.bit_array[i/8];
+		// os << bv.to_string();
+	// }
+	os << bv.to_string();
 	return os;
 }
 

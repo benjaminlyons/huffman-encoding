@@ -48,3 +48,13 @@ void print_leafs(const Node* root){
 		print_leafs(root->right);
 	}	
 }
+
+int count_leafs(const Node* root){
+	if(! root)	return 0;
+
+	if(!root->left && !root->right){
+		return 1;
+	} else{
+		return count_leafs(root->left) + count_leafs(root->right);
+	}
+}

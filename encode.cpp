@@ -3,6 +3,7 @@
 #include <string>
 #include <fstream>
 #include <cstdint>
+#include <map>
 
 #include "tree.h"
 #include "bitvector.h"
@@ -74,16 +75,51 @@ Node* construct_tree(std::priority_queue<Node>* pq){
 	return root;
 }
 
-void generate_header(const Node* node, std::string curr){
+void generate_key_helper(const Node* node, std::string curr, std::map<char, bitvector*>& key){
 	if(!node)	return;
+
 	// check if leaf
 	if(!node->left && !node->right){
-		std::cout << *node << " " << curr << std::endl;
+		bitvector* bv = new bitvector(curr);
+		key[node->value] = bv;
+		// std::cout << node->value << curr << key[node->value]->to_string() << std::endl;
 	} else {
-		generate_header(node->left, curr + "0");
-		generate_header(node->right, curr + "1");
+		generate_key_helper(node->left, curr + "0", key);
+		generate_key_helper(node->right, curr + "1", key);
 	}	
 }
+
+std::map<char, bitvector*>* generate_key(const Node* node){
+	std::map<char, bitvector*>* key = new std::map<char, bitvector*>();
+	generate_key_helper(node, "", *key);
+	return key;
+}
+
+void encode_message(std::string filename, std::ostream& os, std::map<char, bitvector*>* key){
+	std::ifstream ifs(filename);
+
+	// check if file opened successfully
+	if (!ifs.is_open()){
+		return;
+	}
+
+	// print key
+	for(auto it = key->begin(); it != key->end(); it++){
+		os << it->first << it->second->to_string() << std::endl;
+	}
+
+	bitvector bv;
+
+	char c;
+	while(ifs.get(c)){
+		bv.append(*(*key)[c]);	
+	}
+
+	os << bv << std::endl;
+
+	ifs.close();	
+}
+
 
 void encode(std::string filename){
 
@@ -93,21 +129,19 @@ void encode(std::string filename){
 
 	const Node* root = construct_tree(pq);
 
-	// generate_codes(root, "");
-	std::cout << (root->left->value) << std::endl;
+	std::map<char, bitvector*>* key = generate_key(root);
 
-
+	encode_message(filename, std::cout, key);
 }
-
 int main(int argc, char* argv[]){
 	// std::cout << sizeof(bool) << std::endl;
-	bitvector bv;
-	for(int i = 0; i < 256; i++){
-		bv.append((char)i, 8);
-	}
-	std::cout << bv << std::endl;
-
-
-	// encode("input.txt");
+	// std::string s = "10111";
+	// bitvector ex(s);
+	// std::cout << ex << std::endl;
+	// std::cout << ex.to_string() << std::endl;
+	// s = "0001";
+	// bitvector ex2(s);
+	// std::cout << ex2 << std::endl;
+	encode("input.txt");
 	return 0;
 }
