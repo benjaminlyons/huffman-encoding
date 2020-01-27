@@ -118,6 +118,8 @@ void encode_message(std::string filename, std::ostream& os, std::map<char, bitve
 		os << it->first << it->second->to_string() << std::endl;
 	}
 
+	os << "END" << std::endl;
+
 	os << bv;
 
 	ifs.close();	

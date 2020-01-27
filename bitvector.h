@@ -60,6 +60,11 @@ class bitvector{
 			size++;
 		}
 
+		void set_bit_array(uint8_t* ba, size_t s){
+			bit_array = ba;
+			size = s;
+		}
+
 		void append(char c, int amount){
 			if(amount > 8)	amount = 8;
 			uint8_t i = (uint8_t) c;
