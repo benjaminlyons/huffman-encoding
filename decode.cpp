@@ -54,13 +54,11 @@ Node* construct_tree(std::map<char, bitvector*>* key){
 	return root;
 }
 
-void decode(std::string filename){
-	std::ifstream ifs(filename);
+void decode(std::istream& ifs){
 
 	int size;
 	ifs >> size;
 
-	std::cout << size << std::endl;
 
 	std::map<char, bitvector*>* key = new std::map<char, bitvector*>();
 	
@@ -75,7 +73,6 @@ void decode(std::string filename){
 		}
 		bv = new bitvector(input.substr(0, input.size()));
 		(*key)[c] = bv;
-		std::cout << c << bv->to_string() << std::endl;
 		ifs.get(c);
 	}
 
@@ -88,15 +85,18 @@ void decode(std::string filename){
 	d.set_bit_array(data, size);	
 
 
-	std::cout << d.to_string() << std::endl;
 	Node* root = construct_tree(key);
-	print_leafs(root);
-	std::cout << count_leafs(root) << std::endl;
 	std::string message = decode_bitvector(d, root);
-	std::cout << message << std::endl;
+	std::cout << message;
 }
 
 int main(int argc, char* argv[]){
-	decode("data.enc");
+	if(argc == 2){
+		std::ifstream ifs;
+		ifs.open(argv[1]);
+		decode(ifs);
+	} else {
+		decode(std::cin);
+	}
 	return 0;
 }
