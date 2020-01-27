@@ -103,10 +103,6 @@ void encode_message(std::string filename, std::ostream& os, std::map<char, bitve
 		return;
 	}
 
-	// print key
-	for(auto it = key->begin(); it != key->end(); it++){
-		os << it->first << it->second->to_string() << std::endl;
-	}
 
 	bitvector bv;
 
@@ -115,7 +111,14 @@ void encode_message(std::string filename, std::ostream& os, std::map<char, bitve
 		bv.append(*(*key)[c]);	
 	}
 
-	os << bv << std::endl;
+	os << bv.get_size() << std::endl;
+
+	// print key
+	for(auto it = key->begin(); it != key->end(); it++){
+		os << it->first << it->second->to_string() << std::endl;
+	}
+
+	os << bv;
 
 	ifs.close();	
 }

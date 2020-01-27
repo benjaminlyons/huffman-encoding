@@ -73,20 +73,20 @@ class bitvector{
 		bool get(size_t index){
 			return (bit_array[index / 8] >> (7 - (index % 8))) % 2;
 		}
+		
+		size_t get_size(){
+			return size;
+		}
 	private:
 		size_t size;
 		size_t capacity;
-		uint8_t* bit_array; friend std::ostream& operator<<(std::ostream&, bitvector&); 
+		uint8_t* bit_array; 
+friend std::ostream& operator<<(std::ostream&, bitvector&); 
 }; 
+
 std::ostream& operator<<(std::ostream& os, bitvector& bv){
-	// print number of bits
-	os << "Size: " << bv.size << std::endl;
 	// then print data
-	// for(size_t i = 0; i < bv.size; i+=8){
-		// os << bv.bit_array[i/8];
-		// os << bv.to_string();
-	// }
-	os << bv.to_string();
+	os.write((char*)bv.bit_array, bv.size/8+1);
 	return os;
 }
 
