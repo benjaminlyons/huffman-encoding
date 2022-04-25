@@ -16,4 +16,4 @@ encode.o: encode.cpp tree.h bitvector.h
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 clean:
-	rm encode.o encode
+	rm encode.o encode decode.o decode

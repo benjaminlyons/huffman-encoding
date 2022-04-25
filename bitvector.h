@@ -61,6 +61,7 @@ class bitvector{
 		}
 
 		void set_bit_array(uint8_t* ba, size_t s){
+			free(bit_array);
 			bit_array = ba;
 			size = s;
 		}
@@ -81,6 +82,10 @@ class bitvector{
 		
 		size_t get_size(){
 			return size;
+		}
+
+		size_t get_capacity(){
+			return capacity;
 		}
 	private:
 		size_t size;

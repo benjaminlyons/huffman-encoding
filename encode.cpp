@@ -104,22 +104,41 @@ void encode_message(std::string filename, std::ostream& os, std::map<char, bitve
 	}
 
 
-	bitvector bv;
 
+	size_t size = 0;
 	char c;
 	while(ifs.get(c)){
-		bv.append(*(*key)[c]);	
+		if((*key)[c])
+			size += (*key)[c]->get_size();
 	}
-
-	os << bv.get_size() << std::endl;
+	os << size << std::endl;
 
 	// print key
 	for(auto it = key->begin(); it != key->end(); it++){
-		os << it->first << it->second->to_string() << std::endl;
+		if(it->second)
+			os << it->first << it->second->to_string() << std::endl;
 	}
 
 	os << "END" << std::endl;
 
+	ifs.close();
+	ifs.open(filename);
+	if(!ifs.is_open()){
+		return;
+	}
+
+	bitvector bv;
+	while(ifs.get(c)){
+		if((*key)[c]){
+			bv.append(*(*key)[c]);
+		}
+
+		if(bv.get_size() > 512 && bv.get_size() % 8 == 0){
+			os << bv;
+			uint8_t* ba = (uint8_t*)calloc(1, bv.get_capacity());
+			bv.set_bit_array(ba, 0);
+		}
+	}
 	os << bv;
 
 	ifs.close();	
@@ -138,15 +157,10 @@ void encode(std::string filename){
 
 	encode_message(filename, std::cout, key);
 }
+
 int main(int argc, char* argv[]){
-	// std::cout << sizeof(bool) << std::endl;
-	// std::string s = "10111";
-	// bitvector ex(s);
-	// std::cout << ex << std::endl;
-	// std::cout << ex.to_string() << std::endl;
-	// s = "0001";
-	// bitvector ex2(s);
-	// std::cout << ex2 << std::endl;
-	encode("input.txt");
+	if(argc > 1){
+		encode(argv[1]);
+	}
 	return 0;
 }
